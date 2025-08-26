@@ -1,0 +1,3 @@
+Name,Category,PhysicalSize,Type,OrbitType,Altitude,Mass,Power,Mission,DamagePoints,OODA
+SatA,Communication,Small,Comms,GEO,35786,2000,1.5,Relay,5,Fast
+SatB,Reconnaissance,Medium,Imaging,LEO,500,500,2,Imaging,8,Fast

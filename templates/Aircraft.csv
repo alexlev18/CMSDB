@@ -1,0 +1,3 @@
+Name,Category,PhysicalSize,Type,Agility,Length,Span,Height,Crew,Armor,MaxWeight,MaxPayload,DamagePoints,OODA
+F-16,Fixed-wing,Small,Fighter,High,15,9.5,4.8,1,Light,12000,7000,10,Fast
+F-18,Fixed-wing,Medium,Attack,Medium,17,11,5,2,Light,14000,8000,12,Moderate

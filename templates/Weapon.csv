@@ -1,0 +1,3 @@
+Name,Category,PhysicalSize,Type,Range,Guidance,Speed,Warhead,LaunchPlatform,DamagePoints,OODA
+MissileA,Missile,Medium,SurfaceToAir,150,Infrared,3,Explosive,Ground,20,Fast
+TorpedoB,Torpedo,Small,AntiShip,50,Acoustic,60,Explosive,Submarine,15,Moderate

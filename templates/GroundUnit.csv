@@ -1,0 +1,3 @@
+Name,Category,PhysicalSize,Type,Mobility,Length,Width,Height,Crew,Armor,MaxSpeed,Range,DamagePoints,OODA
+TankA,Armor,Medium,MBT,Tracked,6.5,3.5,2.4,4,Heavy,60,500,15,Moderate
+JeepB,Recon,Small,Jeep,Wheeled,3.8,1.7,1.8,2,Light,120,400,5,Fast

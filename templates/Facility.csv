@@ -1,0 +1,3 @@
+Name,Category,PhysicalSize,Type,Personnel,Armor,MaxCapacity,DamagePoints,OODA
+BaseA,Military,Large,Airbase,1000,Concrete,50,40,Moderate
+BaseB,Civil,Medium,Harbor,500,Steel,30,30,Slow
