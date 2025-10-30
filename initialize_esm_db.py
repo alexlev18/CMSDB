@@ -1,154 +1,156 @@
 import sqlite3
-from typing import Dict, Sequence
+import textwrap
+from typing import Dict, Sequence, Tuple
 
 DB_FILE = "esm_operator.db"
 
+TableSchema = Sequence[Tuple[str, str]]
+
+TABLE_SCHEMAS: Dict[str, TableSchema] = {
+    "Platform": (
+        ("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+        ("Name", "TEXT"),
+        ("Category", "TEXT"),
+        ("Country", "TEXT"),
+        ("PhysicalSize", "TEXT"),
+        ("Type", "TEXT"),
+        ("Domain", "TEXT"),
+        ("Agility", "TEXT"),
+        ("DamagePoints", "INTEGER"),
+        ("OODA", "TEXT"),
+        ("Notes", "TEXT"),
+    ),
+    "Aircraft": (
+        ("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+        ("Name", "TEXT"),
+        ("Category", "TEXT"),
+        ("Country", "TEXT"),
+        ("PhysicalSize", "TEXT"),
+        ("Type", "TEXT"),
+        ("Agility", "TEXT"),
+        ("Length", "REAL"),
+        ("Span", "REAL"),
+        ("Height", "REAL"),
+        ("Crew", "INTEGER"),
+        ("Armor", "TEXT"),
+        ("MaxWeight", "REAL"),
+        ("MaxPayload", "REAL"),
+        ("DamagePoints", "INTEGER"),
+        ("OODA", "TEXT"),
+    ),
+    "Facility": (
+        ("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+        ("Name", "TEXT"),
+        ("Category", "TEXT"),
+        ("Country", "TEXT"),
+        ("PhysicalSize", "TEXT"),
+        ("Type", "TEXT"),
+        ("Personnel", "INTEGER"),
+        ("Armor", "TEXT"),
+        ("MaxCapacity", "INTEGER"),
+        ("DamagePoints", "INTEGER"),
+        ("OODA", "TEXT"),
+    ),
+    "GroundUnit": (
+        ("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+        ("Name", "TEXT"),
+        ("Category", "TEXT"),
+        ("Country", "TEXT"),
+        ("PhysicalSize", "TEXT"),
+        ("Type", "TEXT"),
+        ("Mobility", "TEXT"),
+        ("Length", "REAL"),
+        ("Width", "REAL"),
+        ("Height", "REAL"),
+        ("Crew", "INTEGER"),
+        ("Armor", "TEXT"),
+        ("MaxSpeed", "REAL"),
+        ("Range", "REAL"),
+        ("DamagePoints", "INTEGER"),
+        ("OODA", "TEXT"),
+    ),
+    "Submarine": (
+        ("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+        ("Name", "TEXT"),
+        ("Category", "TEXT"),
+        ("Country", "TEXT"),
+        ("PhysicalSize", "TEXT"),
+        ("Type", "TEXT"),
+        ("Displacement", "REAL"),
+        ("Length", "REAL"),
+        ("Beam", "REAL"),
+        ("Draft", "REAL"),
+        ("Crew", "INTEGER"),
+        ("Armor", "TEXT"),
+        ("MaxDepth", "REAL"),
+        ("MaxSpeed", "REAL"),
+        ("Range", "REAL"),
+        ("DamagePoints", "INTEGER"),
+        ("OODA", "TEXT"),
+    ),
+    "Ship": (
+        ("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+        ("Name", "TEXT"),
+        ("Category", "TEXT"),
+        ("Country", "TEXT"),
+        ("PhysicalSize", "TEXT"),
+        ("Type", "TEXT"),
+        ("Displacement", "REAL"),
+        ("Length", "REAL"),
+        ("Beam", "REAL"),
+        ("Draft", "REAL"),
+        ("Crew", "INTEGER"),
+        ("Armor", "TEXT"),
+        ("MaxSpeed", "REAL"),
+        ("Range", "REAL"),
+        ("DamagePoints", "INTEGER"),
+        ("OODA", "TEXT"),
+    ),
+    "Satellite": (
+        ("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+        ("Name", "TEXT"),
+        ("Category", "TEXT"),
+        ("Country", "TEXT"),
+        ("PhysicalSize", "TEXT"),
+        ("Type", "TEXT"),
+        ("OrbitType", "TEXT"),
+        ("Altitude", "REAL"),
+        ("Mass", "REAL"),
+        ("Power", "REAL"),
+        ("Mission", "TEXT"),
+        ("DamagePoints", "INTEGER"),
+        ("OODA", "TEXT"),
+    ),
+    "Weapon": (
+        ("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+        ("Name", "TEXT"),
+        ("Category", "TEXT"),
+        ("Country", "TEXT"),
+        ("PhysicalSize", "TEXT"),
+        ("Type", "TEXT"),
+        ("Range", "REAL"),
+        ("Guidance", "TEXT"),
+        ("Speed", "REAL"),
+        ("Warhead", "TEXT"),
+        ("LaunchPlatform", "TEXT"),
+        ("DamagePoints", "INTEGER"),
+        ("OODA", "TEXT"),
+    ),
+}
+
+
+def build_create_statement(table: str, schema: TableSchema) -> str:
+    columns = ",\n            ".join(f"{name} {definition}" for name, definition in schema)
+    statement = f"""
+        CREATE TABLE IF NOT EXISTS {table} (
+            {columns}
+        );
+    """
+    return textwrap.dedent(statement)
+
+
 TABLES: Dict[str, str] = {
-    "Platform": """
-        CREATE TABLE IF NOT EXISTS Platform (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT,
-            Category TEXT,
-            Country TEXT,
-            PhysicalSize TEXT,
-            Type TEXT,
-            Domain TEXT,
-            Agility TEXT,
-            DamagePoints INTEGER,
-            OODA TEXT,
-            Notes TEXT
-        );
-    """,
-    "Aircraft": """
-        CREATE TABLE IF NOT EXISTS Aircraft (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT,
-            Category TEXT,
-            Country TEXT,
-            PhysicalSize TEXT,
-            Type TEXT,
-            Agility TEXT,
-            Length REAL,
-            Span REAL,
-            Height REAL,
-            Crew INTEGER,
-            Armor TEXT,
-            MaxWeight REAL,
-            MaxPayload REAL,
-            DamagePoints INTEGER,
-            OODA TEXT
-        );
-    """,
-    "Facility": """
-        CREATE TABLE IF NOT EXISTS Facility (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT,
-            Category TEXT,
-            Country TEXT,
-            PhysicalSize TEXT,
-            Type TEXT,
-            Personnel INTEGER,
-            Armor TEXT,
-            MaxCapacity INTEGER,
-            DamagePoints INTEGER,
-            OODA TEXT
-        );
-    """,
-    "GroundUnit": """
-        CREATE TABLE IF NOT EXISTS GroundUnit (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT,
-            Category TEXT,
-            Country TEXT,
-            PhysicalSize TEXT,
-            Type TEXT,
-            Mobility TEXT,
-            Length REAL,
-            Width REAL,
-            Height REAL,
-            Crew INTEGER,
-            Armor TEXT,
-            MaxSpeed REAL,
-            Range REAL,
-            DamagePoints INTEGER,
-            OODA TEXT
-        );
-    """,
-    "Submarine": """
-        CREATE TABLE IF NOT EXISTS Submarine (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT,
-            Category TEXT,
-            Country TEXT,
-            PhysicalSize TEXT,
-            Type TEXT,
-            Displacement REAL,
-            Length REAL,
-            Beam REAL,
-            Draft REAL,
-            Crew INTEGER,
-            Armor TEXT,
-            MaxDepth REAL,
-            MaxSpeed REAL,
-            Range REAL,
-            DamagePoints INTEGER,
-            OODA TEXT
-        );
-    """,
-    "Ship": """
-        CREATE TABLE IF NOT EXISTS Ship (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT,
-            Category TEXT,
-            Country TEXT,
-            PhysicalSize TEXT,
-            Type TEXT,
-            Displacement REAL,
-            Length REAL,
-            Beam REAL,
-            Draft REAL,
-            Crew INTEGER,
-            Armor TEXT,
-            MaxSpeed REAL,
-            Range REAL,
-            DamagePoints INTEGER,
-            OODA TEXT
-        );
-    """,
-    "Satellite": """
-        CREATE TABLE IF NOT EXISTS Satellite (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT,
-            Category TEXT,
-            Country TEXT,
-            PhysicalSize TEXT,
-            Type TEXT,
-            OrbitType TEXT,
-            Altitude REAL,
-            Mass REAL,
-            Power REAL,
-            Mission TEXT,
-            DamagePoints INTEGER,
-            OODA TEXT
-        );
-    """,
-    "Weapon": """
-        CREATE TABLE IF NOT EXISTS Weapon (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT,
-            Category TEXT,
-            Country TEXT,
-            PhysicalSize TEXT,
-            Type TEXT,
-            Range REAL,
-            Guidance TEXT,
-            Speed REAL,
-            Warhead TEXT,
-            LaunchPlatform TEXT,
-            DamagePoints INTEGER,
-            OODA TEXT
-        );
-    """,
+    table: build_create_statement(table, schema) for table, schema in TABLE_SCHEMAS.items()
 }
 
 SAMPLE_DATA: Dict[str, Dict[str, Sequence[Sequence[object]]]] = {
@@ -598,12 +600,18 @@ SAMPLE_DATA: Dict[str, Dict[str, Sequence[Sequence[object]]]] = {
 }
 
 
-def ensure_country_column(conn: sqlite3.Connection, table: str) -> None:
+def ensure_table_columns(conn: sqlite3.Connection, table: str) -> None:
+    """Make sure legacy databases gain any newly introduced columns."""
+
+    expected_schema = TABLE_SCHEMAS[table]
     cur = conn.cursor()
     cur.execute(f"PRAGMA table_info({table})")
-    columns = {row[1] for row in cur.fetchall()}
-    if "Country" not in columns:
-        cur.execute(f"ALTER TABLE {table} ADD COLUMN Country TEXT")
+    existing_columns = {row[1] for row in cur.fetchall()}
+
+    for column, definition in expected_schema:
+        if column == "id" or column in existing_columns:
+            continue
+        cur.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
 
 
 def populate_sample_data(conn: sqlite3.Connection) -> None:
@@ -630,7 +638,7 @@ def initialize_database(db_file: str = DB_FILE) -> None:
         for ddl in TABLES.values():
             cur.execute(ddl)
         for table in TABLES:
-            ensure_country_column(conn, table)
+            ensure_table_columns(conn, table)
         populate_sample_data(conn)
         conn.commit()
     finally:
